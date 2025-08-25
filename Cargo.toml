@@ -1,0 +1,9 @@
+[package]
+name = "unwrap_or_ai"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+
+[lib]
+proc-macro = true
