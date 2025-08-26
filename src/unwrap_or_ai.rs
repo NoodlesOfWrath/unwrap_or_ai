@@ -70,7 +70,7 @@ where
 
     // Create Cerebras client using OpenAI-compatible interface
     let client = OpenAICompatibleClient::new()
-        .with_base_url("https://api.cerebras.ai/v1")
+        .with_base_url("https://api.cerebras.ai/v1/chat")
         .with_api_key(api_key);
 
     let llm = OpenAICompatibleChatModel::builder()
@@ -96,17 +96,20 @@ macro_rules! unwrap_or_ai {
             // Call the original function
             let result = $fn_name($($args),*);
 
+            let source_code = paste::paste! { [<print_source_of_ $fn_name>]() };
             // Prepare the prompt for the AI with function context
             let prompt = format!(
                 "The following function call failed: {}({})
                 Function name: {}
                 Parameters: {:?}
+                Source code: {}
                 
                 This function should return the appropriate type. Generate a reasonable response as valid JSON.",
                 stringify!($fn_name),
                 stringify!($($args),*),
                 stringify!($fn_name),
-                ($($args),*)
+                stringify!($($args),*),
+                source_code
             );
 
             // Use the trait method to handle AI recovery with proper type inference

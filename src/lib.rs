@@ -5,6 +5,7 @@ pub mod unwrap_or_ai;
 
 #[cfg(test)]
 mod tests {
+    use dotenv::dotenv;
     use kalosm_language::prelude::{
         ChatModelExt, OpenAICompatibleChatModel, OpenAICompatibleClient,
     };
@@ -213,6 +214,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_unwrap_or_ai_with_real_api_call_none_option() {
+        dotenv().ok();
+
         // Test that when an Option function returns None and API key is set, we get an AI-generated response
         if std::env::var("CEREBRAS_API").is_err() {
             println!("Skipping test - CEREBRAS_API environment variable not set");
@@ -244,6 +247,8 @@ mod tests {
 
     #[tokio::test]
     async fn test_api_connection_debug() {
+        dotenv().ok();
+
         // Debug test to check what's wrong with the API connection
         if std::env::var("CEREBRAS_API").is_err() {
             println!("Skipping test - CEREBRAS_API environment variable not set");
@@ -298,7 +303,7 @@ mod tests {
 
     #[tokio::test]
     async fn test_ai_with_complex_context() {
-        // Test AI with a more complex scenario that includes context from function docs
+        dotenv().ok();
 
         if std::env::var("CEREBRAS_API").is_err() {
             println!("Skipping test - CEREBRAS_API environment variable not set");
