@@ -2,6 +2,9 @@
 name = "unwrap_or_ai_proc_macro"
 version = "0.1.0"
 edition = "2024"
+description = "A procedural macro to enhance functions with AI-powered error handling using unwrap_or_ai."
+license = "MIT"
+repository = "https://github.com/NoodlesOfWrath/unwrap_or_ai/tree/master/unwrap_or_ai_proc_macro"
 
 [lib]
 proc-macro = true
