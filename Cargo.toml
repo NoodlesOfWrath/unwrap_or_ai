@@ -4,12 +4,11 @@ version = "0.1.0"
 edition = "2024"
 
 [dependencies]
-kalosm-language = { version = "0.4.1", features = ["remote"] }
 unwrap_or_ai_proc_macro = { path = "unwrap_or_ai_proc_macro" }
 serde = { version = "1.0", features = ["derive"] }
 tokio = { version = "1.0", features = ["full"] }
-kalosm-sample = "0.4.1"
 reqwest = { version = "0.11", features = ["json"] }
 serde_json = "1.0"
 paste = "1.0"
 dotenv = "0.15.0"
+schemars = { version = "1.0.4", features = ["derive"] }

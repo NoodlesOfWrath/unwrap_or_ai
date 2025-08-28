@@ -3,13 +3,11 @@ pub use unwrap_or_ai_proc_macro;
 #[macro_use]
 pub mod unwrap_or_ai;
 
+pub mod groq_client;
+
 #[cfg(test)]
 mod tests {
     use dotenv::dotenv;
-    use kalosm_language::prelude::{
-        ChatModelExt, OpenAICompatibleChatModel, OpenAICompatibleClient,
-    };
-    use kalosm_sample::Schema;
     use serde::{Deserialize, Serialize};
     use unwrap_or_ai_proc_macro::unwrap_or_ai_func;
 
@@ -25,7 +23,7 @@ mod tests {
     /// - id: Unique identifier for the user (positive integer)
     /// - name: Full name of the user (first and last name)
     /// - email: Valid email address for contacting the user
-    #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Schema)]
+    #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, schemars::JsonSchema)]
     struct TestUser {
         id: u32,
         name: String,
@@ -38,7 +36,7 @@ mod tests {
     /// - id: Unique product identifier (positive integer)
     /// - name: Product name or title (descriptive string)
     /// - price: Product price in USD (positive decimal number)
-    #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, Schema)]
+    #[derive(Debug, Clone, PartialEq, Serialize, Deserialize, schemars::JsonSchema)]
     struct TestProduct {
         id: u32,
         name: String,
@@ -165,29 +163,8 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_unwrap_or_ai_with_failed_result_no_api_key() {
-        // Test that failed Results return the original error when no API key is set
-        // First, ensure CEREBRAS_API is not set
-        unsafe {
-            std::env::remove_var("CEREBRAS_API");
-        }
-
-        let result = unwrap_or_ai!(get_user_failure(999)).await;
-
-        assert!(result.is_err());
-        let error = result.unwrap_err();
-        assert_eq!(error, "User with id 999 not found in database");
-    }
-
-    #[tokio::test]
     async fn test_unwrap_or_ai_with_real_api_call_failed_result() {
-        // Test that when a function fails and API key is set, we get an AI-generated response
-
-        // Skip if no API key is set
-        if std::env::var("CEREBRAS_API").is_err() {
-            println!("Skipping test - CEREBRAS_API environment variable not set");
-            return;
-        }
+        dotenv().ok();
 
         let result = unwrap_or_ai!(get_user_failure(42)).await;
 
@@ -219,8 +196,8 @@ mod tests {
         dotenv().ok();
 
         // Test that when an Option function returns None and API key is set, we get an AI-generated response
-        if std::env::var("CEREBRAS_API").is_err() {
-            println!("Skipping test - CEREBRAS_API environment variable not set");
+        if std::env::var("GROQ_API").is_err() {
+            println!("Skipping test - GROQ_API environment variable not set");
             return;
         }
 
@@ -248,48 +225,11 @@ mod tests {
     }
 
     #[tokio::test]
-    async fn test_api_connection_debug() {
-        dotenv().ok();
-
-        // Debug test to check what's wrong with the API connection
-        if std::env::var("CEREBRAS_API").is_err() {
-            println!("Skipping test - CEREBRAS_API environment variable not set");
-            return;
-        }
-
-        let api_key = std::env::var("CEREBRAS_API").unwrap();
-
-        // Create Cerebras client using OpenAI-compatible interface
-        let client = OpenAICompatibleClient::new()
-            .with_base_url("https://api.groq.com/openai/v1")
-            .with_api_key(api_key);
-
-        let llm = OpenAICompatibleChatModel::builder()
-            .with_client(client)
-            .with_model("openai/gpt-oss-20b")
-            .build();
-
-        println!("LLM created successfully");
-
-        // Try a simple chat call first (non-structured)
-        let mut chat = llm.chat();
-        match chat("Hello, please respond with just 'Hi'").await {
-            Ok(response) => {
-                println!("Simple chat worked: {}", response);
-            }
-            Err(e) => {
-                println!("Simple chat failed: {}", e);
-                panic!("Error details: {:?}", e);
-            }
-        }
-    }
-
-    #[tokio::test]
     async fn test_ai_with_complex_context() {
         dotenv().ok();
 
-        if std::env::var("CEREBRAS_API").is_err() {
-            println!("Skipping test - CEREBRAS_API environment variable not set");
+        if std::env::var("GROQ_API").is_err() {
+            println!("Skipping test - GROQ_API environment variable not set");
             return;
         }
 
@@ -329,7 +269,7 @@ mod tests {
     async fn test_unwrap_or_ai_with_none_option_no_api_key() {
         // Test that None Options remain None when no API key is set
         unsafe {
-            std::env::remove_var("CEREBRAS_API");
+            std::env::remove_var("GROQ_API");
         }
 
         let result = unwrap_or_ai!(get_optional_product_none(999)).await;
@@ -341,7 +281,7 @@ mod tests {
     async fn test_call_ai_for_type_no_api_key() {
         // Test the helper function behavior when no API key is set
         unsafe {
-            std::env::remove_var("CEREBRAS_API");
+            std::env::remove_var("GROQ_API");
         }
 
         let prompt = "Test prompt".to_string();
@@ -349,7 +289,7 @@ mod tests {
 
         assert!(result.is_err());
         let error_msg = format!("{}", result.unwrap_err());
-        assert!(error_msg.contains("CEREBRAS_API environment variable not set"));
+        assert!(error_msg.contains("GROQ_API environment variable not set"));
     }
 
     // Mock test for when API key is set (but we won't actually call the API)

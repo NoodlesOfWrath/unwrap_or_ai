@@ -1,4 +1,4 @@
-use kalosm_language::prelude::{ChatModelExt, OpenAICompatibleChatModel, OpenAICompatibleClient};
+use crate::groq_client::{GroqClient, models};
 
 // Helper trait to extract the inner type and handle AI recovery
 #[allow(async_fn_in_trait)]
@@ -8,13 +8,7 @@ pub trait UnwrapOrAi<T> {
 
 impl<T, E> UnwrapOrAi<T> for Result<T, E>
 where
-    T: serde::de::DeserializeOwned
-        + kalosm_language::prelude::Schema
-        + Unpin
-        + Clone
-        + Send
-        + Sync
-        + 'static,
+    T: serde::de::DeserializeOwned + schemars::JsonSchema + Unpin + Clone + Send + Sync + 'static,
 {
     async fn unwrap_or_ai_impl(self, prompt: String) -> Self {
         match self {
@@ -39,13 +33,7 @@ where
 
 impl<T> UnwrapOrAi<T> for Option<T>
 where
-    T: serde::de::DeserializeOwned
-        + kalosm_language::prelude::Schema
-        + Unpin
-        + Clone
-        + Send
-        + Sync
-        + 'static,
+    T: serde::de::DeserializeOwned + schemars::JsonSchema + Unpin + Clone + Send + Sync + 'static,
 {
     async fn unwrap_or_ai_impl(self, prompt: String) -> Self {
         match self {
@@ -71,32 +59,20 @@ where
 // Helper function to call AI and deserialize to specific type T
 pub async fn call_ai_for_type<T>(prompt: String) -> Result<T, Box<dyn std::error::Error>>
 where
-    T: serde::de::DeserializeOwned
-        + kalosm_language::prelude::Schema
-        + Unpin
-        + Clone
-        + Send
-        + Sync
-        + 'static,
+    T: serde::de::DeserializeOwned + schemars::JsonSchema + Unpin + Clone + Send + Sync + 'static,
 {
-    let api_key =
-        std::env::var("CEREBRAS_API").map_err(|_| "CEREBRAS_API environment variable not set")?;
+    let api_key = std::env::var("GROQ_API").map_err(|_| "GROQ_API environment variable not set")?;
 
-    // Create Cerebras client using OpenAI-compatible interface
-    let client = OpenAICompatibleClient::new()
-        .with_base_url("https://api.groq.com/openai/v1")
-        .with_api_key(api_key);
+    // Create Groq client using our direct HTTP client
+    let groq = GroqClient::new(api_key);
 
-    let llm = OpenAICompatibleChatModel::builder()
-        .with_client(client)
-        .with_model("llama3.1-8b")
-        .build();
-
-    let task = llm.task("You are an AI error recovery assistant. When given an error message and program context, your task is to infer the most likely intended response or output. 
-                Do not explain the error—directly provide the corrected or plausible output as if the error had not occurred.")
-                .typed();
-
-    let ai_response = task(&prompt).await?;
+    let ai_response: T = groq.chat_completion_typed(
+        models::KIMI_K2, // Use a model that supports structured output
+        vec![
+            ("system", "You are an AI error recovery assistant. When given an error message and program context, your task is to infer the most likely intended response or output. Do not explain the error—directly provide the corrected or plausible output as if the error had not occurred."),
+            ("user", &prompt)
+        ]
+    ).await?;
 
     Ok(ai_response)
 }
