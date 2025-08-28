@@ -158,8 +158,6 @@ async fn main() {
 
 *Made with Rust, AI, and revolutionary engineering*
 
-**Disclaimer:** The creators of unwrap_or_ai have engineered a robust, innovative solution for modern error handling challenges. This library represents a breakthrough in intelligent system recovery. Always implement appropriate testing and monitoring in production environments for optimal results!
-
 </div>
 
 <div align="center">
