@@ -191,6 +191,8 @@ mod tests {
 
         let result = unwrap_or_ai!(get_user_failure(42)).await;
 
+        print!("result: {:?}", result);
+
         // The AI should have generated a user, so this should be Ok
         assert!(
             result.is_ok(),
@@ -259,12 +261,12 @@ mod tests {
 
         // Create Cerebras client using OpenAI-compatible interface
         let client = OpenAICompatibleClient::new()
-            .with_base_url("https://api.cerebras.ai/v1")
+            .with_base_url("https://api.groq.com/openai/v1")
             .with_api_key(api_key);
 
         let llm = OpenAICompatibleChatModel::builder()
             .with_client(client)
-            .with_model("qwen-3-coder-480b")
+            .with_model("openai/gpt-oss-20b")
             .build();
 
         println!("LLM created successfully");
@@ -278,25 +280,6 @@ mod tests {
             Err(e) => {
                 println!("Simple chat failed: {}", e);
                 panic!("Error details: {:?}", e);
-            }
-        }
-
-        println!("Chat test passed, trying structured generation...");
-
-        // Now try structured generation
-        let task = llm
-            .task("Generate a simple test response")
-            .typed::<TestUser>();
-        let result =
-            task("Generate a user with ID 123, name 'Test', email 'test@example.com'").await;
-
-        match result {
-            Ok(user) => {
-                println!("Structured generation worked: {:?}", user);
-            }
-            Err(e) => {
-                println!("Structured generation failed: {}", e);
-                println!("Error details: {:?}", e);
             }
         }
     }

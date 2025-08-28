@@ -20,10 +20,17 @@ where
         match self {
             Ok(val) => Ok(val),
             Err(e) => {
+                println!("Result error detected, calling AI for recovery...");
                 // Call AI for recovery
                 match call_ai_for_type::<T>(prompt).await {
-                    Ok(ai_result) => Ok(ai_result),
-                    Err(_) => Err(e), // Return original error if AI fails
+                    Ok(ai_result) => {
+                        println!("AI recovery successful!");
+                        Ok(ai_result)
+                    }
+                    Err(ai_error) => {
+                        println!("AI recovery failed: {}", ai_error);
+                        Err(e) // Return original error if AI fails
+                    }
                 }
             }
         }
@@ -44,10 +51,17 @@ where
         match self {
             Some(val) => Some(val),
             None => {
+                println!("Option is None, calling AI for recovery...");
                 // Call AI for recovery
                 match call_ai_for_type::<T>(prompt).await {
-                    Ok(ai_result) => Some(ai_result),
-                    Err(_) => None, // Return None if AI fails
+                    Ok(ai_result) => {
+                        println!("AI recovery successful!");
+                        Some(ai_result)
+                    }
+                    Err(ai_error) => {
+                        println!("AI recovery failed: {}", ai_error);
+                        None // Return None if AI fails
+                    }
                 }
             }
         }
@@ -70,7 +84,7 @@ where
 
     // Create Cerebras client using OpenAI-compatible interface
     let client = OpenAICompatibleClient::new()
-        .with_base_url("https://api.cerebras.ai/v1/chat")
+        .with_base_url("https://api.groq.com/openai/v1")
         .with_api_key(api_key);
 
     let llm = OpenAICompatibleChatModel::builder()
@@ -132,6 +146,8 @@ macro_rules! unwrap_or_ai {
                 Generate a reasonable response as valid JSON that matches the expected return type.",
                 stringify!($fn_call)
             );
+
+            println!("Prompt for AI: {}", prompt);
 
             // Use the trait method to handle AI recovery with proper type inference
             result.unwrap_or_ai_impl(prompt).await

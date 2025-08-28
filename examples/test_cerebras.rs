@@ -15,12 +15,12 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("Testing Cerebras connection...");
 
     let client = OpenAICompatibleClient::new()
-        .with_base_url("https://api.cerebras.ai/v1")
+        .with_base_url("https://api.groq.com/openai/v1")
         .with_api_key(api_key);
 
     let llm = OpenAICompatibleChatModel::builder()
         .with_client(client)
-        .with_model("llama3.1-8b") 
+        .with_model("llama3.1-8b")
         .build();
 
     println!("Creating structured task...");
