@@ -2,11 +2,9 @@
 
 <div align="center">
   <img src="https://img.shields.io/badge/Language-Rust-orange?style=for-the-badge&logo=rust" />
+  <img src="https://img.shields.io/crates/v/unwrap_or_ai?style=for-the-badge&logo=rust" />
   <img src="https://img.shields.io/badge/AI%20POWERED-🤖-ff6b6b?style=for-the-badge&labelColor=000000" />
-  <img src="https://img.shields.io/badge/PRODUCTION%20READY-MAYBE-feca57?style=for-the-badge&labelColor=000000" />
 </div>
-
-<br />
 
 <div align="center">
   <h1> THE FUTURE OF ERROR HANDLING IS HERE</h1>
@@ -166,4 +164,5 @@ async fn main() {
 <div align="center">
   <h3>The future of error handling starts today!</h3>
 </div>
+
 
