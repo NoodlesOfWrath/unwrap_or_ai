@@ -1174,6 +1174,8 @@ dependencies = [
 [[package]]
 name = "unwrap_or_ai_proc_macro"
 version = "0.1.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "4193f99d17d17d74846df48818327565eda6eb4d0ae51fc942d4bb022e8dbf5e"
 dependencies = [
  "quote",
  "syn",
