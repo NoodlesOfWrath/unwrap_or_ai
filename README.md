@@ -1,4 +1,4 @@
-# 🚀 unwrap_or_ai
+# unwrap_or_ai
 
 <div align="center">
   <img src="https://img.shields.io/badge/Language-Rust-orange?style=for-the-badge&logo=rust" />
@@ -9,10 +9,10 @@
 <br />
 
 <div align="center">
-  <h1>🌟 THE FUTURE OF ERROR HANDLING IS HERE</h1>
+  <h1> THE FUTURE OF ERROR HANDLING IS HERE</h1>
 </div>
 
-## 🚀 REVOLUTIONIZE YOUR PRODUCTION WORKFLOW
+## REVOLUTIONIZE YOUR PRODUCTION WORKFLOW
 
 **Tired of manually handling `unwrap()` results? Let AI do the heavy lifting!**
 
@@ -166,3 +166,4 @@ async fn main() {
 <div align="center">
   <h3>The future of error handling starts today!</h3>
 </div>
+
