@@ -4,6 +4,7 @@
   <img src="https://img.shields.io/badge/Language-Rust-orange?style=for-the-badge&logo=rust" />
   <img src="https://img.shields.io/crates/v/unwrap_or_ai?style=for-the-badge&logo=rust" />
   <img src="https://img.shields.io/badge/AI%20POWERED-🤖-ff6b6b?style=for-the-badge&labelColor=000000" />
+  <img src="https://img.shields.io/badge/ASYNC-POWERED-purple?style=for-the-badge" />
 </div>
 
 <div align="center">
@@ -164,5 +165,6 @@ async fn main() {
 <div align="center">
   <h3>The future of error handling starts today!</h3>
 </div>
+
 
 
