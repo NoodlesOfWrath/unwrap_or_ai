@@ -85,76 +85,49 @@ async fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // Example 1: User lookup with AI recovery
     println!("🔍 Example 1: Fetching user profile...");
-    let user_result = unwrap_or_ai!(fetch_user_from_database(12345)).await;
+    let user = unwrap_or_ai!(fetch_user_from_database(12345)).await;
 
-    match user_result {
-        Ok(user) => {
-            println!("✅ Successfully retrieved user: {:?}", user);
-            println!("   User ID: {}", user.id);
-            println!("   Name: {}", user.name);
-            println!("   Email: {}", user.email);
-            println!("   Department: {}", user.department);
-        }
-        Err(e) => {
-            println!("❌ Failed to retrieve user: {}", e);
-        }
-    }
+    println!("✅ Successfully retrieved user: {:?}", user);
+    println!("   User ID: {}", user.id);
+    println!("   Name: {}", user.name);
+    println!("   Email: {}", user.email);
+    println!("   Department: {}", user.department);
 
     println!("\n{}\n", "=".repeat(60));
 
     // Example 2: Payment processing with AI recovery
     println!("💳 Example 2: Processing payment...");
-    let payment_result = unwrap_or_ai!(process_payment(599.99, 12345)).await;
+    let payment = unwrap_or_ai!(process_payment(599.99, 12345)).await;
 
-    match payment_result {
-        Ok(payment) => {
-            println!("✅ Payment processed successfully: {:?}", payment);
-            println!("   Transaction ID: {}", payment.transaction_id);
-            println!("   Amount: ${} {}", payment.amount, payment.currency);
-            println!("   Status: {}", payment.status);
-        }
-        Err(e) => {
-            println!("❌ Payment processing failed: {}", e);
-        }
-    }
+    println!("✅ Payment processed successfully: {:?}", payment);
+    println!("   Transaction ID: {}", payment.transaction_id);
+    println!("   Amount: ${} {}", payment.amount, payment.currency);
+    println!("   Status: {}", payment.status);
 
     println!("\n{}\n", "=".repeat(60));
 
     // Example 3: Weather data with AI recovery for None values
     println!("🌤️  Example 3: Fetching weather data...");
-    let weather_result = unwrap_or_ai!(get_weather_data("San Francisco")).await;
+    let weather = unwrap_or_ai!(get_weather_data("San Francisco")).await;
 
-    match weather_result {
-        Some(weather) => {
-            println!("✅ Weather data retrieved: {:?}", weather);
-            println!("   City: {}", weather.city);
-            println!("   Temperature: {}°F", weather.temperature);
-            println!("   Condition: {}", weather.condition);
-            println!("   Humidity: {}%", weather.humidity);
-            println!("   Wind Speed: {} mph", weather.wind_speed);
-        }
-        None => {
-            println!("❌ No weather data available");
-        }
-    }
+    println!("✅ Weather data retrieved: {:?}", weather);
+    println!("   City: {}", weather.city);
+    println!("   Temperature: {}°F", weather.temperature);
+    println!("   Condition: {}", weather.condition);
+    println!("   Humidity: {}%", weather.humidity);
+    println!("   Wind Speed: {} mph", weather.wind_speed);
 
     println!("\n{}\n", "=".repeat(60));
 
     // Example 4: User preferences with AI recovery
     println!("⚙️  Example 4: Loading user preferences...");
-    let prefs_result = unwrap_or_ai!(get_user_preferences(67890)).await;
+    let prefs = unwrap_or_ai!(get_user_preferences(67890)).await;
 
-    match prefs_result {
-        Some(user) => {
-            println!("✅ User preferences loaded: {:?}", user);
-            println!("   User ID: {}", user.id);
-            println!("   Name: {}", user.name);
-            println!("   Preferred Department: {}", user.department);
-        }
-        None => {
-            println!("❌ No user preferences found");
-        }
-    }
+    println!("✅ User preferences loaded: {:?}", prefs);
+    println!("   User ID: {}", prefs.id);
+    println!("   Name: {}", prefs.name);
+    println!("   Email: {}", prefs.email);
+    println!("   Department: {}", prefs.department);
 
     println!("\n{}", "=".repeat(60));
     println!(

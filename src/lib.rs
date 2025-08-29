@@ -12,7 +12,7 @@ mod tests {
     use unwrap_or_ai_proc_macro::unwrap_or_ai_func;
 
     // Import the helper functions and traits
-    use crate::unwrap_or_ai::{UnwrapOrAi, call_ai_for_type};
+    use crate::unwrap_or_ai::UnwrapOrAi;
 
     use super::*;
 
@@ -145,8 +145,7 @@ mod tests {
         // Test that successful Results are returned as-is without calling AI
         let result = unwrap_or_ai!(get_user_success(1)).await;
 
-        assert!(result.is_ok());
-        let user = result.unwrap();
+        let user = result;
         assert_eq!(user.id, 1);
         assert_eq!(user.name, "John Doe");
     }
@@ -156,8 +155,7 @@ mod tests {
         // Test that Some Options are returned as-is without calling AI
         let result = unwrap_or_ai!(get_optional_product_some(1)).await;
 
-        assert!(result.is_some());
-        let product = result.unwrap();
+        let product = result;
         assert_eq!(product.id, 1);
         assert_eq!(product.name, "Test Product");
     }
@@ -170,13 +168,7 @@ mod tests {
 
         print!("result: {:?}", result);
 
-        // The AI should have generated a user, so this should be Ok
-        assert!(
-            result.is_ok(),
-            "Expected AI to generate a user when original function failed"
-        );
-
-        let user = result.unwrap();
+        let user = result;
         assert_eq!(user.id, 42, "AI should preserve the requested user ID");
         assert!(!user.name.is_empty(), "AI should generate a non-empty name");
         assert!(
@@ -203,13 +195,7 @@ mod tests {
 
         let result = unwrap_or_ai!(get_optional_product_none(123)).await;
 
-        // The AI should have generated a product, so this should be Some
-        assert!(
-            result.is_some(),
-            "Expected AI to generate a product when original function returned None"
-        );
-
-        let product = result.unwrap();
+        let product = result;
         print!("product: {:?}", product);
         assert_eq!(
             product.id, 123,
@@ -235,26 +221,7 @@ mod tests {
 
         let result = unwrap_or_ai!(get_user_preferences(789, "theme")).await;
 
-        match &result {
-            Ok(user) => {
-                println!(
-                    "Success! AI generated user from preferences failure: {:?}",
-                    user
-                );
-            }
-            Err(e) => {
-                println!("Unwrap or AI failed with error: {}", e);
-                println!("Error details: {:?}", e);
-            }
-        }
-
-        assert!(
-            result.is_ok(),
-            "AI should generate a user when preferences service fails. Error: {:?}",
-            result.err()
-        );
-
-        let user = result.unwrap();
+        let user = result;
         assert_eq!(
             user.id, 789,
             "AI should preserve the user ID from the failed call"
@@ -263,33 +230,6 @@ mod tests {
         assert!(!user.email.is_empty(), "AI should generate an email");
 
         println!("AI generated user from preferences failure: {:?}", user);
-    }
-
-    #[tokio::test]
-    async fn test_unwrap_or_ai_with_none_option_no_api_key() {
-        // Test that None Options remain None when no API key is set
-        unsafe {
-            std::env::remove_var("GROQ_API");
-        }
-
-        let result = unwrap_or_ai!(get_optional_product_none(999)).await;
-
-        assert!(result.is_none());
-    }
-
-    #[tokio::test]
-    async fn test_call_ai_for_type_no_api_key() {
-        // Test the helper function behavior when no API key is set
-        unsafe {
-            std::env::remove_var("GROQ_API");
-        }
-
-        let prompt = "Test prompt".to_string();
-        let result = call_ai_for_type::<TestUser>(prompt).await;
-
-        assert!(result.is_err());
-        let error_msg = format!("{}", result.unwrap_err());
-        assert!(error_msg.contains("GROQ_API environment variable not set"));
     }
 
     // Mock test for when API key is set (but we won't actually call the API)

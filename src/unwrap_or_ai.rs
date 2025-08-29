@@ -3,27 +3,23 @@ use crate::groq_client::{GroqClient, models};
 // Helper trait to extract the inner type and handle AI recovery
 #[allow(async_fn_in_trait)]
 pub trait UnwrapOrAi<T> {
-    async fn unwrap_or_ai_impl(self, prompt: String) -> Self;
+    async fn unwrap_or_ai_impl(self, prompt: String) -> T;
 }
 
 impl<T, E> UnwrapOrAi<T> for Result<T, E>
 where
     T: serde::de::DeserializeOwned + schemars::JsonSchema + Unpin + Clone + Send + Sync + 'static,
 {
-    async fn unwrap_or_ai_impl(self, prompt: String) -> Self {
+    async fn unwrap_or_ai_impl(self, prompt: String) -> T {
         match self {
-            Ok(val) => Ok(val),
-            Err(e) => {
+            Ok(val) => val,
+            Err(_) => {
                 println!("Result error detected, calling AI for recovery...");
                 // Call AI for recovery
                 match call_ai_for_type::<T>(prompt).await {
-                    Ok(ai_result) => {
-                        println!("AI recovery successful!");
-                        Ok(ai_result)
-                    }
+                    Ok(ai_result) => ai_result,
                     Err(ai_error) => {
-                        println!("AI recovery failed: {}", ai_error);
-                        Err(e) // Return original error if AI fails
+                        panic!("AI recovery failed: {}", ai_error);
                     }
                 }
             }
@@ -35,20 +31,19 @@ impl<T> UnwrapOrAi<T> for Option<T>
 where
     T: serde::de::DeserializeOwned + schemars::JsonSchema + Unpin + Clone + Send + Sync + 'static,
 {
-    async fn unwrap_or_ai_impl(self, prompt: String) -> Self {
+    async fn unwrap_or_ai_impl(self, prompt: String) -> T {
         match self {
-            Some(val) => Some(val),
+            Some(val) => val,
             None => {
                 println!("Option is None, calling AI for recovery...");
                 // Call AI for recovery
                 match call_ai_for_type::<T>(prompt).await {
                     Ok(ai_result) => {
                         println!("AI recovery successful!");
-                        Some(ai_result)
+                        ai_result
                     }
                     Err(ai_error) => {
-                        println!("AI recovery failed: {}", ai_error);
-                        None // Return None if AI fails
+                        panic!("AI recovery failed: {}", ai_error);
                     }
                 }
             }
