@@ -91,15 +91,14 @@ fn fetch_user_from_database(user_id: u32) -> Result<User, String> {
 
 #[tokio::main]
 async fn main() {
+    // Load the GROQ_API key from .env
+    // Groq keys are free at https://console.groq.com/
+    dotenv::dotenv().ok();
+
     // INTELLIGENT RECOVERY IN ACTION:
     let user = unwrap_or_ai!(fetch_user_from_database(12345)).await;
     
-    match user {
-        Ok(intelligent_user) => {
-            println!("AI-generated user: {}", intelligent_user.name);
-        }
-        Err(_) => unreachable!(), // Never happens with AI recovery!
-    }
+    println!("AI-generated user: {}", user.name);
 }
 ```
 
