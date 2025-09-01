@@ -1,9 +1,10 @@
-pub use unwrap_or_ai_proc_macro;
+pub mod groq_client;
+pub use paste;
+
+pub use unwrap_or_ai_proc_macro::unwrap_or_ai_func;
 
 #[macro_use]
 pub mod unwrap_or_ai;
-
-pub mod groq_client;
 
 #[cfg(test)]
 mod tests {

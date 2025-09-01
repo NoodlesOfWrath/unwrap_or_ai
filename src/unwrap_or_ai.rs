@@ -76,6 +76,7 @@ where
 macro_rules! unwrap_or_ai {
     ($fn_name:ident($($args:expr),*)) => {{
         use $crate::unwrap_or_ai::UnwrapOrAi;
+        use $crate::paste;
 
         async {
             // Call the original function

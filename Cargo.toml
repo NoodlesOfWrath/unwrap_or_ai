@@ -1,6 +1,6 @@
 [package]
 name = "unwrap_or_ai"
-version = "1.0.1"
+version = "1.1.1"
 edition = "2024"
 description = "A Rust library providing AI-powered error handling using procedural macros."
 license = "MIT"
