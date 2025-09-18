@@ -47,11 +47,12 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-unwrap_or_ai = "0.1.0"
+unwrap_or_ai = "1.1.1"
 unwrap_or_ai_proc_macro = "0.1.0"
 tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
-schemars = "0.8"
+schemars = { version = "1.0", features = ["derive"] }
+dotenv = "0.15.0"
 ```
 
 ```bash
