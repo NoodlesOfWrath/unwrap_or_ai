@@ -47,11 +47,12 @@ Add to your `Cargo.toml`:
 
 ```toml
 [dependencies]
-unwrap_or_ai = "0.1.0"
+unwrap_or_ai = "1.1.1"
 unwrap_or_ai_proc_macro = "0.1.0"
 tokio = { version = "1.0", features = ["full"] }
 serde = { version = "1.0", features = ["derive"] }
-schemars = "0.8"
+schemars = { version = "1.0", features = ["derive"] }
+dotenv = "0.15.0"
 ```
 
 ```bash
@@ -101,6 +102,26 @@ async fn main() {
     println!("AI-generated user: {}", user.name);
 }
 ```
+
+---
+
+## Environment Setup
+
+**REQUIRED:** You need to set up your environment variables for AI-powered error recovery:
+
+1. **Install dotenv** (already included in dependencies above)
+2. **Get your GROQ API key** (free at <https://console.groq.com/>)
+3. **Create a `.env` file** in your project root:
+
+   ```bash
+   GROQ_API=your_groq_api_key_here
+   ```
+
+4. **Load environment variables** in your code:
+
+   ```rust
+   dotenv::dotenv().ok();
+   ```
 
 ---
 
@@ -162,7 +183,3 @@ async fn main() {
 <div align="center">
   <h3>The future of error handling starts today!</h3>
 </div>
-
-
-
-
